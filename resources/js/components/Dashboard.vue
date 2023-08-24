@@ -18,9 +18,18 @@
 <script>
 export default {
     name:"dashboard",
-    data(){
+    data() {
         return {
-            user:this.$store.state.auth.user
+            user: {},
+        };
+    },
+
+    async mounted() {
+        try {
+            const response = await axios.get('/user');
+            this.user = response.data;
+        } catch (error) {
+            console.error('Error fetching user data:', error);
         }
     }
 }

@@ -66,22 +66,24 @@ export default {
         ...mapActions({
             signIn:'auth/login'
         }),
-        async register(){
-            this.processing = true
-            await axios.get('/sanctum/csrf-cookie')
-            await axios.post('/register',this.user).then(response=>{
-                this.validationErrors = {}
-                this.signIn()
-            }).catch(({response})=>{
-                if(response.status===422){
-                    this.validationErrors = response.data.errors
-                }else{
-                    this.validationErrors = {}
-                    alert(response.data.message)
+        async register() {
+            this.processing = true;
+            await axios.get('/sanctum/csrf-cookie');
+
+            try {
+                await axios.post('/register', this.user);
+                this.validationErrors = {};
+                this.signIn();
+            } catch (error) {
+                if (error.response && error.response.status === 422) {
+                    this.validationErrors = error.response.data.errors;
+                } else {
+                    this.validationErrors = {};
+                    alert('An error occurred during registration.');
                 }
-            }).finally(()=>{
-                this.processing = false
-            })
+            } finally {
+                this.processing = false;
+            }
         }
     }
 }
